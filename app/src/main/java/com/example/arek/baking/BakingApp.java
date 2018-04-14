@@ -3,8 +3,10 @@ package com.example.arek.baking;
 import android.app.Application;
 
 import com.example.arek.baking.di.AppModule;
-import com.example.arek.baking.di.DaggerNetComponent;
-import com.example.arek.baking.di.NetComponent;
+
+import com.example.arek.baking.di.DaggerRepositoryComponent;
+import com.example.arek.baking.di.RecipeRepositoryModule;
+import com.example.arek.baking.di.RepositoryComponent;
 import com.example.arek.baking.di.NetModule;
 
 /**
@@ -12,17 +14,19 @@ import com.example.arek.baking.di.NetModule;
  */
 
 public class BakingApp extends Application {
-    private NetComponent mNetComponent;
+    private RepositoryComponent mRepositoryComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        mNetComponent = DaggerNetComponent.builder()
+        mRepositoryComponent = DaggerRepositoryComponent.builder()
+        //DaggerNetComponent.builder()
                 .appModule(new AppModule(this))
                 .netModule(new NetModule())
+                .recipeRepositoryModule(new RecipeRepositoryModule())
                 .build();
     }
 
-    public NetComponent getNetComponent() { return mNetComponent; };
+    public RepositoryComponent getRepositoryComponent() { return mRepositoryComponent; };
 }

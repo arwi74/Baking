@@ -12,7 +12,7 @@ import dagger.Component;
  */
 
 @Singleton
-@Component(modules={AppModule.class, NetModule.class})
-public interface NetComponent {
+@Component(modules={AppModule.class, NetModule.class, RecipeRepositoryModule.class})
+public interface RepositoryComponent {
     void inject(RecipeListActivity activity);
 }
