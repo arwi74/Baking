@@ -12,6 +12,8 @@ import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
@@ -20,24 +22,17 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RecipeListActivity extends AppCompatActivity {
+    @Inject
+    BakingApi mBakingApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((BakingApp)getApplication()).getNetComponent().inject(this);
         setContentView(R.layout.activity_recipe_list);
 
-        Gson gson = new GsonBuilder().setLenient().create();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BakingApi.BASE_URL)
-                .client(new OkHttpClient())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
-
-        BakingApi bakingApi = retrofit.create(BakingApi.class);
-
-        bakingApi.getRecipes()
+        mBakingApi.getRecipes()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getDisposableObserver());
