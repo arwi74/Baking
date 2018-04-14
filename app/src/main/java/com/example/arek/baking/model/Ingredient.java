@@ -13,7 +13,7 @@ public class Ingredient {
     @SerializedName("measure")
     private String mMeasure;
     @SerializedName("quantity")
-    private Long mQuantity;
+    private double mQuantity;
 
     public String getIngredient() {
         return mIngredient;
@@ -31,11 +31,11 @@ public class Ingredient {
         mMeasure = measure;
     }
 
-    public Long getQuantity() {
+    public double getQuantity() {
         return mQuantity;
     }
 
-    public void setQuantity(Long quantity) {
+    public void setQuantity(double quantity) {
         mQuantity = quantity;
     }
 
