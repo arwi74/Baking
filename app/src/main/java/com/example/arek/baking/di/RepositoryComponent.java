@@ -1,6 +1,6 @@
 package com.example.arek.baking.di;
 
-import com.example.arek.baking.RecipeListActivity;
+import com.example.arek.baking.recipeList.RecipeListActivity;
 
 
 import javax.inject.Singleton;

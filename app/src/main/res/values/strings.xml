@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Baking</string>
+    <string name="recipe_list_error_downloading">Error while downloading recipes</string>
 </resources>
