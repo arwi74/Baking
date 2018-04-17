@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.example.arek.baking.R;
 import com.example.arek.baking.databinding.ActivityRecipeDetailBinding;
+import com.example.arek.baking.recipeDetails.recipeStep.RecipeStepActivity;
 
 import timber.log.Timber;
 
@@ -42,11 +43,15 @@ public class RecipeDetailActivity extends AppCompatActivity implements
 
     @Override
     public void onIngredientsClick() {
-        Timber.d("ingradients click");
+        Timber.d("ingredients click");
     }
 
     @Override
     public void onRecipeStepClick(long recipeStepId) {
         Timber.d("recipe step click: "+recipeStepId);
+        Intent intent = new Intent(this, RecipeStepActivity.class);
+        intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, mRecipeId);
+        intent.putExtra(RecipeStepActivity.EXTRA_RECIPE_STEP_ID, recipeStepId);
+        startActivity(intent);
     }
 }

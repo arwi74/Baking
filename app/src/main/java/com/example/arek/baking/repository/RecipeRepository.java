@@ -2,6 +2,7 @@ package com.example.arek.baking.repository;
 
 import com.example.arek.baking.api.BakingApi;
 import com.example.arek.baking.model.Recipe;
+import com.example.arek.baking.model.Step;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,19 @@ public class RecipeRepository {
             if ( recipe.getId() == recipeId ) {
                 return recipe;
             }
+        }
+        return null;
+    }
+
+    public Observable<Step> getRecipeStep(long recipeId, long recipeStepId) {
+        return getRecipe(recipeId)
+                .map(recipe -> filterRecipeStep(recipe,recipeStepId));
+    }
+
+    private Step filterRecipeStep(Recipe recipe, long stepId) {
+        for (Step step: recipe.getSteps()) {
+            if ( step.getId() == stepId )
+                return step;
         }
         return null;
     }

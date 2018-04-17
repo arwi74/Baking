@@ -28,6 +28,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.arek.baking.recipeList.RecipeListActivity" />
         </activity>
+        <activity
+            android:name=".recipeDetails.recipeStep.RecipeStepActivity"
+            android:label="@string/title_activity_recipe_step"
+            android:parentActivityName=".recipeDetails.RecipeDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.arek.baking.recipeDetails.RecipeDetailActivity" />
+        </activity>
     </application>
 
 </manifest>
