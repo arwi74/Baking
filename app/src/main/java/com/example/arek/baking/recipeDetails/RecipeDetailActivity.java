@@ -12,7 +12,10 @@ import android.view.View;
 import com.example.arek.baking.R;
 import com.example.arek.baking.databinding.ActivityRecipeDetailBinding;
 
-public class RecipeDetailActivity extends AppCompatActivity {
+import timber.log.Timber;
+
+public class RecipeDetailActivity extends AppCompatActivity implements
+        RecipeDetailActivityFragment.RecipeDetailActivityListener {
     ActivityRecipeDetailBinding mBinding;
     public static final String EXTRA_RECIPE_ID = "extra_recipe_id";
     private long mRecipeId;
@@ -36,4 +39,14 @@ public class RecipeDetailActivity extends AppCompatActivity {
         ).commit();
     }
 
+
+    @Override
+    public void onIngredientsClick() {
+        Timber.d("ingradients click");
+    }
+
+    @Override
+    public void onRecipeStepClick(long recipeStepId) {
+        Timber.d("recipe step click: "+recipeStepId);
+    }
 }

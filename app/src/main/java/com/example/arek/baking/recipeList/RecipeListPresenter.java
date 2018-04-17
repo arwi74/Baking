@@ -20,8 +20,8 @@ import timber.log.Timber;
 public class RecipeListPresenter implements RecipeListContract.Presenter,
         RecipeAdapter.RecipeAdapterListener {
     private RecipeRepository mRecipeRepository;
-    RecipeListContract.View mView;
-    DisposableObserver mDisposable;
+    private RecipeListContract.View mView;
+    private DisposableObserver mDisposable;
 
     public RecipeListPresenter(@NonNull RecipeRepository recipeRepository) {
         mRecipeRepository = recipeRepository;

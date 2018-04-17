@@ -1,6 +1,6 @@
 package com.example.arek.baking.recipeDetails;
 
-import android.app.Application;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import com.example.arek.baking.BakingApp;
 import com.example.arek.baking.R;
 import com.example.arek.baking.adapter.RecipeStepAdapter;
-import com.example.arek.baking.api.BakingApi;
 import com.example.arek.baking.databinding.FragmentRecipeDetailBinding;
 import com.example.arek.baking.model.Step;
 import com.example.arek.baking.repository.RecipeRepository;
@@ -33,10 +32,9 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
     private RecipeDetailContract.Presenter mPresenter;
     @Inject
     public RecipeRepository mRepository;
+    private RecipeDetailActivityListener mListener;
 
-    public RecipeDetailActivityFragment() {
-
-    }
+    public RecipeDetailActivityFragment() {}
 
     public static RecipeDetailActivityFragment newInstance(long recipeId) {
         RecipeDetailActivityFragment fragment = new RecipeDetailActivityFragment();
@@ -44,6 +42,11 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
         bundle.putLong(RecipeDetailActivity.EXTRA_RECIPE_ID,recipeId);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public interface RecipeDetailActivityListener {
+        void onIngredientsClick();
+        void onRecipeStepClick(long recipeStepId);
     }
 
     @Override
@@ -70,13 +73,39 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
         mPresenter = new RecipeDetailPresenter(mRepository);
         mPresenter.takeView(this);
         setRecyclerView();
+        setIngredientsButton();
         mPresenter.start(mRecipeId);
+    }
+
+    private void setIngredientsButton() {
+        mBinding.recipeDetailIngredientsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onIngredientsClick();
+            }
+        });
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mPresenter.dropView();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if ( getActivity() instanceof RecipeDetailActivityListener ){
+            mListener = (RecipeDetailActivityListener)getActivity();
+        }else {
+            throw new IllegalArgumentException("Activity must implement RecipeDetailActivityListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     private void setRecyclerView() {
@@ -106,7 +135,7 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
 
     @Override
     public void openRecipeStep(int recipeStepId) {
-
+        mListener.onRecipeStepClick(recipeStepId);
     }
 
     @Override

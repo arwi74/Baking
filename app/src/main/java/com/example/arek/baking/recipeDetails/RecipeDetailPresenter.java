@@ -14,12 +14,12 @@ import timber.log.Timber;
  */
 
 public class RecipeDetailPresenter implements
-        RecipeDetailContract.Presenter,
-        RecipeStepAdapter.RecipeStepListener {
+                    RecipeDetailContract.Presenter,
+                    RecipeStepAdapter.RecipeStepListener {
 
-    RecipeDetailContract.View mView;
-    RecipeRepository mRepository;
-    DisposableObserver<Recipe> mDisposable;
+    private RecipeDetailContract.View mView;
+    private RecipeRepository mRepository;
+    private DisposableObserver<Recipe> mDisposable;
 
     public RecipeDetailPresenter(RecipeRepository repository) {
         mRepository = repository;
@@ -32,6 +32,9 @@ public class RecipeDetailPresenter implements
 
     @Override
     public void dropView() {
+        if ( mDisposable != null && !mDisposable.isDisposed() ) {
+            mDisposable.dispose();
+        }
         mView = null;
     }
 
@@ -46,10 +49,10 @@ public class RecipeDetailPresenter implements
     }
 
     private void getRecipeSteps(long recipeId) {
+        mDisposable = getDisposableObserver();
         mRepository.getRecipe(recipeId)
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(getDisposableObserver());
-
+        .subscribe(mDisposable);
     }
 
     private DisposableObserver<Recipe> getDisposableObserver() {
@@ -59,7 +62,6 @@ public class RecipeDetailPresenter implements
                 Timber.d("recipe :"+recipe);
                 mView.hideProgressBar();
                 mView.showRecipeSteps(recipe.getSteps());
-                mView.showRecipeIngredientsButton();
             }
 
             @Override
