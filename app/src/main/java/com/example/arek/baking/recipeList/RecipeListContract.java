@@ -20,6 +20,8 @@ public interface RecipeListContract {
         void showRecipes(List<Recipe> recipes);
 
         void showErrorMessage();
+
+        void openRecipe(long recipeId);
     }
 
     interface Presenter extends BasePresenter<RecipeListContract.View> {

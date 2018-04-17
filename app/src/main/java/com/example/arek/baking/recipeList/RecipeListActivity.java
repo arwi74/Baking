@@ -1,5 +1,6 @@
 package com.example.arek.baking.recipeList;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import com.example.arek.baking.R;
 import com.example.arek.baking.adapter.RecipeAdapter;
 import com.example.arek.baking.databinding.ActivityRecipeListBinding;
 import com.example.arek.baking.model.Recipe;
+import com.example.arek.baking.recipeDetails.RecipeDetailActivity;
 import com.example.arek.baking.repository.RecipeRepository;
 
 import java.util.List;
@@ -36,7 +38,8 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_list);
         ((BakingApp)getApplication()).getRepositoryComponent().inject(this);
-        mAdapter = new RecipeAdapter();
+        mPresenter = new RecipeListPresenter(mRecipeRepository);
+        mAdapter = new RecipeAdapter((RecipeAdapter.RecipeAdapterListener)mPresenter);
         RecyclerView recycler = mBinding.recipeListRecyclerView;
         RecyclerView.LayoutManager layout = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL,
@@ -44,8 +47,8 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
         recycler.setLayoutManager(layout);
         recycler.setHasFixedSize(true);
         recycler.setAdapter(mAdapter);
-        mPresenter = new RecipeListPresenter(mRecipeRepository);
         mPresenter.takeView(this);
+        mPresenter.getRecipes();
     }
 
     @Override
@@ -72,5 +75,12 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
     @Override
     public void showErrorMessage() {
         Toast.makeText(this, R.string.recipe_list_error_downloading, Toast.LENGTH_LONG);
+    }
+
+    @Override
+    public void openRecipe(long recipeId) {
+        Intent intent = new Intent(this, RecipeDetailActivity.class);
+        intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID,recipeId);
+        startActivity(intent);
     }
 }

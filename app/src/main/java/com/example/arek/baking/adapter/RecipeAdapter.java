@@ -14,12 +14,23 @@ import com.example.arek.baking.model.Recipe;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Created by Arkadiusz Wilczek on 14.04.18.
  */
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
     private List<Recipe> mRecipes;
+    private RecipeAdapterListener mListener;
+
+    public interface RecipeAdapterListener {
+        void onRecipeSelect(long recipeId);
+    }
+
+    public RecipeAdapter(RecipeAdapterListener listener) {
+        mListener = listener;
+    }
 
     @NonNull
     @Override
@@ -56,6 +67,15 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             super(itemView);
             recipeImage = (ImageView) itemView.findViewById(R.id.recipe_item_image);
             recipeName = (TextView) itemView.findViewById(R.id.recipe_item_name_text_view);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        Timber.d("item selected");
+                        mListener.onRecipeSelect(mRecipes.get(getAdapterPosition()).getId());
+                    }
+                }
+            });
         }
     }
 }
