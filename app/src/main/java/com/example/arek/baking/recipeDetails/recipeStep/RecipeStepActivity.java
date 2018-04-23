@@ -26,8 +26,10 @@ public class RecipeStepActivity extends AppCompatActivity {
 
         mRecipeId = intent.getLongExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, 0);
         mRecipeStepId = intent.getLongExtra(EXTRA_RECIPE_STEP_ID, 0);
-        openStepFragment();
-        openStepSelectFragment();
+        if ( savedInstanceState == null ) {
+            openStepFragment();
+            openStepSelectFragment();
+        }
     }
 
     private void openStepSelectFragment() {

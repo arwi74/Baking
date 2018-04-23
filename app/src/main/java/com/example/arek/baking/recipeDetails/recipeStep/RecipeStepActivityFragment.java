@@ -1,6 +1,8 @@
 package com.example.arek.baking.recipeDetails.recipeStep;
 
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -15,6 +17,23 @@ import com.example.arek.baking.model.Recipe;
 import com.example.arek.baking.model.Step;
 import com.example.arek.baking.recipeDetails.RecipeDetailActivity;
 import com.example.arek.baking.repository.RecipeRepository;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 import javax.inject.Inject;
 
@@ -30,6 +49,14 @@ public class RecipeStepActivityFragment extends Fragment {
     private FragmentRecipeStepBinding mBinding;
     @Inject
     RecipeRepository mRepository;
+    private SimpleExoPlayer mExoPlayer;
+    private static final String STATE_PLAYER_POSITION = "state_exo_player_position";
+    private static final String STATE_PLAYER_WINDOW = "state_player_window";
+    private static final String STATE_PLAYER_PLAY = "state_player_play";
+    private long mPlayerPosition;
+    private int mPlayerWindow;
+    private boolean mIsPlayerPlay = true;
+    private DisposableObserver mDisposable;
 
     public RecipeStepActivityFragment() {
     }
@@ -46,7 +73,24 @@ public class RecipeStepActivityFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((BakingApp)getActivity().getApplication()).getRepositoryComponent().inject(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        releasePlayer();
+        if ( mDisposable != null && !mDisposable.isDisposed() ) {
+            mDisposable.dispose();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Timber.d("exo player save position: " + mExoPlayer.getCurrentPosition());
+        outState.putLong(STATE_PLAYER_POSITION, mExoPlayer.getCurrentPosition());
+        outState.putInt(STATE_PLAYER_WINDOW, mExoPlayer.getCurrentWindowIndex());
+        outState.putBoolean(STATE_PLAYER_PLAY, mExoPlayer.getPlayWhenReady());
     }
 
     @Override
@@ -54,6 +98,16 @@ public class RecipeStepActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater,
                 R.layout.fragment_recipe_step, container, false);
+
+        ((BakingApp)getActivity().getApplication()).getRepositoryComponent().inject(this);
+
+        if ( savedInstanceState != null) {
+            mPlayerPosition = savedInstanceState.getLong(STATE_PLAYER_POSITION);
+            mPlayerWindow = savedInstanceState.getInt(STATE_PLAYER_WINDOW);
+            mIsPlayerPlay = savedInstanceState.getBoolean(STATE_PLAYER_PLAY);
+            Timber.d("exo player restore position: " +mPlayerPosition);
+        }
+
         return mBinding.getRoot();
     }
 
@@ -77,13 +131,58 @@ public class RecipeStepActivityFragment extends Fragment {
     public void showRecipeStep(Step step) {
         mBinding.recipeStepDescription.setText(step.getDescription());
         mBinding.recipeStepShortDescription.setText(step.getShortDescription());
+        String videoUrl = step.getVideoURL();
+        if ( !videoUrl.isEmpty() ) {
+            initializePlayer(videoUrl);
+        } else {
+            hideExoPlayerView();
+        }
+    }
+
+    private void hideExoPlayerView() {
+        mBinding.recipeStepPlayer.setVisibility(View.GONE);
+    }
+
+    private void initializePlayer(String videoUrl) {
+        if ( mExoPlayer != null || getActivity() == null) return;
+        TrackSelector trackSelector = new DefaultTrackSelector();
+        LoadControl loadControl = new DefaultLoadControl();
+        mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
+        mExoPlayer.addListener(new ExoPlayerListener());
+
+        mBinding.recipeStepPlayer.setPlayer(mExoPlayer);
+        SimpleExoPlayerView exo = mBinding.recipeStepPlayer;
+
+        String userAgent = Util.getUserAgent(getActivity(), "BakingApp");
+        Uri mediaUri = Uri.parse(videoUrl);
+        MediaSource mediaSource = new ExtractorMediaSource(
+                mediaUri,
+                new DefaultDataSourceFactory(getActivity(), userAgent),
+                new DefaultExtractorsFactory(),
+                null,
+                null);
+        mExoPlayer.prepare(mediaSource);
+        mExoPlayer.setPlayWhenReady(mIsPlayerPlay);
+        if ( mPlayerPosition > 0 ) {
+            mExoPlayer.seekTo(mPlayerWindow, mPlayerPosition);
+            Timber.d("exo player seek to position: " + mPlayerPosition);
+            mPlayerPosition = 0;
+        }
+    }
+
+    private void releasePlayer() {
+        if ( mExoPlayer == null ) return;
+        mExoPlayer.stop();
+        mExoPlayer.release();
+        mExoPlayer = null;
     }
 
     public void getRecipeStep() {
+        mDisposable = getDisposableObserver();
+        Timber.d("Recipe id:" + mRecipeId + " step id :" + mRecipeStepId);
         mRepository.getRecipeStep(mRecipeId,mRecipeStepId)
-        .subscribe(getDisposableObserver());
+        .subscribe(mDisposable);
     }
-
 
     DisposableObserver<Step> getDisposableObserver() {
         return new DisposableObserver<Step>() {
@@ -104,4 +203,39 @@ public class RecipeStepActivityFragment extends Fragment {
         };
     }
 
+
+    private class ExoPlayerListener implements ExoPlayer.EventListener {
+
+        @Override
+        public void onTimelineChanged(Timeline timeline, Object manifest) {
+
+        }
+
+        @Override
+        public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+        }
+
+        @Override
+        public void onLoadingChanged(boolean isLoading) {
+
+        }
+
+        @Override
+        public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+
+        }
+
+        @Override
+        public void onPlayerError(ExoPlaybackException error) {
+
+        }
+
+        @Override
+        public void onPositionDiscontinuity() {
+
+        }
+    }
+
 }
+
