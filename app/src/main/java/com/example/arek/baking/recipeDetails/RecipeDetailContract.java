@@ -24,6 +24,8 @@ public interface RecipeDetailContract {
         void openRecipeStep(int  recipeStepId);
 
         void showErrorMessage();
+
+        void showTitle(String title);
     }
 
     interface Presenter extends BasePresenter<View> {

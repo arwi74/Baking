@@ -76,4 +76,13 @@ public class RecipeDetailActivity extends AppCompatActivity implements
         intent.putExtra(RecipeStepActivity.EXTRA_RECIPE_STEP_ID, recipeStepId);
         startActivity(intent);
     }
+
+    @Override
+    public void onTitleSet(String title) {
+        if ( getSupportActionBar() != null ) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+
 }

@@ -52,6 +52,7 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
     public interface RecipeDetailActivityListener {
         void onIngredientsClick();
         void onRecipeStepClick(long recipeStepId);
+        void onTitleSet(String title);
     }
 
     @Override
@@ -154,5 +155,12 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
     @Override
     public void showErrorMessage() {
 
+    }
+
+    @Override
+    public void showTitle(String title) {
+        if ( mListener != null ) {
+            mListener.onTitleSet(title);
+        }
     }
 }
