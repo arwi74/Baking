@@ -5,14 +5,17 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.example.arek.baking.BakingApp;
 import com.example.arek.baking.R;
 import com.example.arek.baking.databinding.ActivityRecipeStepBinding;
 import com.example.arek.baking.model.Recipe;
+import com.example.arek.baking.model.Step;
 import com.example.arek.baking.recipeDetails.RecipeDetailActivity;
 import com.example.arek.baking.repository.RecipeRepository;
+import com.example.arek.baking.utils.Utils;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -25,9 +28,10 @@ public class RecipeStepActivity extends AppCompatActivity {
     public static final String STATE_RECIPE_STEP_ID = "state_recipe_step_id";
     private long mRecipeId;
     private long mRecipeStepId;
-    private long mTotalSteps;
+    private int mStepsListIndex;
     private DisposableObserver mDisposable;
     private ActivityRecipeStepBinding mBinding;
+    private List<Step> mSteps;
 
     @Inject
     RecipeRepository mRepository;
@@ -55,7 +59,7 @@ public class RecipeStepActivity extends AppCompatActivity {
             }
         }
         setButtonsListeners();
-        getTotalSteps();
+        getRecipe();
     }
 
     private void openStepSelectFragment() {
@@ -90,20 +94,21 @@ public class RecipeStepActivity extends AppCompatActivity {
                 && intent.hasExtra(RecipeDetailActivity.EXTRA_RECIPE_ID);
     }
 
-    private void getTotalSteps() {
+    private void getRecipe() {
         mDisposable = getDisposableObserver();
         mRepository
-                .getStepsSize(mRecipeId)
+                .getRecipe(mRecipeId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mDisposable);
 
     }
 
-    private DisposableObserver<Long> getDisposableObserver() {
-        return new DisposableObserver<Long>() {
+   private DisposableObserver<Recipe> getDisposableObserver() {
+        return new DisposableObserver<Recipe>() {
             @Override
-            public void onNext(Long totalSteps) {
-                mTotalSteps = totalSteps;
+            public void onNext(Recipe recipe) {
+                mSteps = recipe.getSteps();
+                mStepsListIndex = Utils.findStepIndex(mSteps, mRecipeStepId);
                 updateButtons();
             }
 
@@ -117,7 +122,7 @@ public class RecipeStepActivity extends AppCompatActivity {
 
             }
         };
-    }
+   }
 
     private void setEnabledNextButton(boolean enabled) {
         mBinding.content.recipeStepNextButton.setEnabled(enabled);
@@ -128,19 +133,21 @@ public class RecipeStepActivity extends AppCompatActivity {
     }
 
     private void updateButtons() {
-        setEnabledNextButton(mRecipeStepId < mTotalSteps-1);
-        setEnabledPreviousButton(mRecipeStepId > 0);
+        setEnabledNextButton(mStepsListIndex < mSteps.size()-1);
+        setEnabledPreviousButton(mStepsListIndex > 0);
     }
 
     private void setButtonsListeners() {
         mBinding.content.recipeStepNextButton.setOnClickListener(view -> {
-           mRecipeStepId++;
+           mStepsListIndex++;
+           mRecipeStepId = mSteps.get(mStepsListIndex).getId();
            openStepFragment();
            updateButtons();
         });
 
         mBinding.content.recipeStepPreviousButton.setOnClickListener(view -> {
-            mRecipeStepId--;
+            mStepsListIndex--;
+            mRecipeStepId = mSteps.get(mStepsListIndex).getId();
             openStepFragment();
             updateButtons();
         });
