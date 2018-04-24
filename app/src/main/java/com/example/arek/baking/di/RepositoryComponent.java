@@ -1,6 +1,7 @@
 package com.example.arek.baking.di;
 
 import com.example.arek.baking.recipeDetails.RecipeDetailActivityFragment;
+import com.example.arek.baking.recipeDetails.recipeStep.RecipeStepActivity;
 import com.example.arek.baking.recipeDetails.recipeStep.RecipeStepActivityFragment;
 import com.example.arek.baking.recipeList.RecipeListActivity;
 
@@ -19,4 +20,5 @@ public interface RepositoryComponent {
     void inject(RecipeListActivity activity);
     void inject(RecipeDetailActivityFragment fragment);
     void inject(RecipeStepActivityFragment fragment);
+    void inject(RecipeStepActivity activity);
 }

@@ -63,4 +63,9 @@ public class RecipeRepository {
         return null;
     }
 
+    public Observable<Long> getStepsSize(long recipeId) {
+        return getRecipe(recipeId)
+                .map(recipe -> (long)recipe.getSteps().size());
+    }
+
 }
