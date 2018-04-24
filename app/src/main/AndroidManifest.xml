@@ -23,7 +23,8 @@
             android:name=".recipeDetails.RecipeDetailActivity"
             android:label="@string/title_activity_recipe_detail"
             android:parentActivityName=".recipeList.RecipeListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.arek.baking.recipeList.RecipeListActivity" />

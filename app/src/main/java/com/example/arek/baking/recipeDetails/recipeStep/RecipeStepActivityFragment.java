@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.arek.baking.BakingApp;
 import com.example.arek.baking.R;
@@ -43,7 +44,7 @@ import timber.log.Timber;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class RecipeStepActivityFragment extends Fragment {
+public class RecipeStepActivityFragment extends Fragment implements RecipeStepContract.View{
     private long mRecipeId;
     private long mRecipeStepId;
     private FragmentRecipeStepBinding mBinding;
@@ -56,7 +57,7 @@ public class RecipeStepActivityFragment extends Fragment {
     private long mPlayerPosition;
     private int mPlayerWindow;
     private boolean mIsPlayerPlay = true;
-    private DisposableObserver mDisposable;
+    private RecipeStepContract.Presenter mPresenter;
 
     public RecipeStepActivityFragment() {
     }
@@ -71,26 +72,23 @@ public class RecipeStepActivityFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
         releasePlayer();
-        if ( mDisposable != null && !mDisposable.isDisposed() ) {
-            mDisposable.dispose();
+        if ( mPresenter != null ) {
+            mPresenter.dropView();
         }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        Timber.d("exo player save position: " + mExoPlayer.getCurrentPosition());
-        outState.putLong(STATE_PLAYER_POSITION, mExoPlayer.getCurrentPosition());
-        outState.putInt(STATE_PLAYER_WINDOW, mExoPlayer.getCurrentWindowIndex());
-        outState.putBoolean(STATE_PLAYER_PLAY, mExoPlayer.getPlayWhenReady());
+        if ( mExoPlayer != null ) {
+            Timber.d("exo player save position: " + mExoPlayer.getCurrentPosition());
+            outState.putLong(STATE_PLAYER_POSITION, mExoPlayer.getCurrentPosition());
+            outState.putInt(STATE_PLAYER_WINDOW, mExoPlayer.getCurrentWindowIndex());
+            outState.putBoolean(STATE_PLAYER_PLAY, mExoPlayer.getPlayWhenReady());
+        }
     }
 
     @Override
@@ -120,7 +118,9 @@ public class RecipeStepActivityFragment extends Fragment {
             mRecipeStepId = bundle.getLong(RecipeStepActivity.EXTRA_RECIPE_STEP_ID);
         }
         Timber.d("Recipe id: "+mRecipeId+" step: "+mRecipeStepId);
-        getRecipeStep();
+        mPresenter = new RecipeStepPresenter(mRepository);
+        mPresenter.takeView(this);
+        mPresenter.getRecipeStep(mRecipeId, mRecipeStepId);
     }
 
     private boolean hasArguments(Bundle bundle) {
@@ -128,6 +128,7 @@ public class RecipeStepActivityFragment extends Fragment {
                 bundle.containsKey(RecipeStepActivity.EXTRA_RECIPE_STEP_ID);
     }
 
+    @Override
     public void showRecipeStep(Step step) {
         mBinding.recipeStepDescription.setText(step.getDescription());
         mBinding.recipeStepShortDescription.setText(step.getShortDescription());
@@ -136,6 +137,17 @@ public class RecipeStepActivityFragment extends Fragment {
             initializePlayer(videoUrl);
         } else {
             hideExoPlayerView();
+        }
+    }
+
+    @Override
+    public void showErrorMessage() {
+        if ( getActivity() != null ) {
+            Toast.makeText(
+                    getActivity(),
+                    R.string.recipe_step_fregment_error_message,
+                    Toast.LENGTH_LONG
+            ).show();
         }
     }
 
@@ -151,7 +163,6 @@ public class RecipeStepActivityFragment extends Fragment {
         mExoPlayer.addListener(new ExoPlayerListener());
 
         mBinding.recipeStepPlayer.setPlayer(mExoPlayer);
-        SimpleExoPlayerView exo = mBinding.recipeStepPlayer;
 
         String userAgent = Util.getUserAgent(getActivity(), "BakingApp");
         Uri mediaUri = Uri.parse(videoUrl);
@@ -175,32 +186,6 @@ public class RecipeStepActivityFragment extends Fragment {
         mExoPlayer.stop();
         mExoPlayer.release();
         mExoPlayer = null;
-    }
-
-    public void getRecipeStep() {
-        mDisposable = getDisposableObserver();
-        Timber.d("Recipe id:" + mRecipeId + " step id :" + mRecipeStepId);
-        mRepository.getRecipeStep(mRecipeId,mRecipeStepId)
-        .subscribe(mDisposable);
-    }
-
-    DisposableObserver<Step> getDisposableObserver() {
-        return new DisposableObserver<Step>() {
-            @Override
-            public void onNext(Step step) {
-                showRecipeStep(step);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        };
     }
 
 

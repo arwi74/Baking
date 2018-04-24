@@ -49,6 +49,7 @@ public class RecipeDetailPresenter implements
     }
 
     private void getRecipeSteps(long recipeId) {
+        mView.showProgressBar();
         mDisposable = getDisposableObserver();
         mRepository.getRecipe(recipeId)
         .observeOn(AndroidSchedulers.mainThread())
@@ -66,7 +67,7 @@ public class RecipeDetailPresenter implements
 
             @Override
             public void onError(Throwable e) {
-                Timber.e(e);
+                mView.hideProgressBar();
                 mView.showErrorMessage();
             }
 

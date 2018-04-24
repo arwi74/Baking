@@ -2,6 +2,7 @@ package com.example.arek.baking.recipeDetails;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -33,6 +36,7 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
     @Inject
     public RecipeRepository mRepository;
     private RecipeDetailActivityListener mListener;
+    private static final String STATE_RECIPE_ID = "state_recipe_id";
 
     public RecipeDetailActivityFragment() {}
 
@@ -40,6 +44,7 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
         RecipeDetailActivityFragment fragment = new RecipeDetailActivityFragment();
         Bundle bundle = new Bundle();
         bundle.putLong(RecipeDetailActivity.EXTRA_RECIPE_ID,recipeId);
+        Timber.d("new instance, recipeId: " +recipeId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -63,6 +68,7 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
         Bundle arguments = getArguments();
         if ( arguments != null && arguments.containsKey(RecipeDetailActivity.EXTRA_RECIPE_ID) ) {
             mRecipeId = arguments.getLong(RecipeDetailActivity.EXTRA_RECIPE_ID);
+            Timber.d("get arguments, recipeId: " + mRecipeId);
         }
     }
 
@@ -74,7 +80,14 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
         mPresenter.takeView(this);
         setRecyclerView();
         setIngredientsButton();
+        Timber.d("Recipe id" + mRecipeId);
         mPresenter.start(mRecipeId);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(STATE_RECIPE_ID, mRecipeId);
     }
 
     private void setIngredientsButton() {
