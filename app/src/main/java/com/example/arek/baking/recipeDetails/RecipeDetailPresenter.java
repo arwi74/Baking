@@ -63,6 +63,7 @@ public class RecipeDetailPresenter implements
                 Timber.d("recipe :"+recipe);
                 mView.hideProgressBar();
                 mView.showRecipeSteps(recipe.getSteps());
+                mView.showIngredients(recipe.getIngredients());
                 mView.showTitle(recipe.getName());
             }
 

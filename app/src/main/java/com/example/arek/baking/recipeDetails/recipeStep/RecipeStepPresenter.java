@@ -47,6 +47,7 @@ public class RecipeStepPresenter implements RecipeStepContract.Presenter {
             public void onNext(Step step) {
                 if ( mView != null ) {
                     mView.showRecipeStep(step);
+                    mView.showTitle(step.getShortDescription());
                 }
             }
 

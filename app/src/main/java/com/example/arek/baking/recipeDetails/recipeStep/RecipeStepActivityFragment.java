@@ -1,5 +1,6 @@
 package com.example.arek.baking.recipeDetails.recipeStep;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -58,6 +59,7 @@ public class RecipeStepActivityFragment extends Fragment implements RecipeStepCo
     private int mPlayerWindow;
     private boolean mIsPlayerPlay = true;
     private RecipeStepContract.Presenter mPresenter;
+    private RecipeStepActivityFragmentHandler mListener;
 
     public RecipeStepActivityFragment() {
     }
@@ -69,6 +71,10 @@ public class RecipeStepActivityFragment extends Fragment implements RecipeStepCo
         bundle.putLong(RecipeStepActivity.EXTRA_RECIPE_STEP_ID, recipeStepId);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    interface RecipeStepActivityFragmentHandler {
+        void setTitle(String title);
     }
 
     @Override
@@ -123,6 +129,20 @@ public class RecipeStepActivityFragment extends Fragment implements RecipeStepCo
         mPresenter.getRecipeStep(mRecipeId, mRecipeStepId);
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if ( getActivity() instanceof RecipeStepActivityFragmentHandler ){
+            mListener = (RecipeStepActivityFragmentHandler) getActivity();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
     private boolean hasArguments(Bundle bundle) {
         return bundle.containsKey(RecipeDetailActivity.EXTRA_RECIPE_ID) &&
                 bundle.containsKey(RecipeStepActivity.EXTRA_RECIPE_STEP_ID);
@@ -148,6 +168,13 @@ public class RecipeStepActivityFragment extends Fragment implements RecipeStepCo
                     R.string.recipe_step_fregment_error_message,
                     Toast.LENGTH_LONG
             ).show();
+        }
+    }
+
+    @Override
+    public void showTitle(String title) {
+        if (mListener != null) {
+            mListener.setTitle(title);
         }
     }
 

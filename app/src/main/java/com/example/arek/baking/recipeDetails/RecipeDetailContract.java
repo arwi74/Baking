@@ -3,6 +3,7 @@ package com.example.arek.baking.recipeDetails;
 import android.support.v7.view.menu.BaseMenuPresenter;
 
 import com.example.arek.baking.BasePresenter;
+import com.example.arek.baking.model.Ingredient;
 import com.example.arek.baking.model.Step;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public interface RecipeDetailContract {
     interface View {
 
         void showRecipeSteps(List<Step> steps);
+
+        void showIngredients(List<Ingredient> ingredients);
 
         void showProgressBar();
 

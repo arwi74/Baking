@@ -14,8 +14,10 @@ import android.view.ViewGroup;
 
 import com.example.arek.baking.BakingApp;
 import com.example.arek.baking.R;
+import com.example.arek.baking.adapter.IngredientsAdapter;
 import com.example.arek.baking.adapter.RecipeStepAdapter;
 import com.example.arek.baking.databinding.FragmentRecipeDetailBinding;
+import com.example.arek.baking.model.Ingredient;
 import com.example.arek.baking.model.Step;
 import com.example.arek.baking.repository.RecipeRepository;
 
@@ -32,6 +34,7 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
     private FragmentRecipeDetailBinding mBinding;
     private long mRecipeId;
     private RecipeStepAdapter mAdapter;
+    private IngredientsAdapter mIgredientsAdapter;
     private RecipeDetailContract.Presenter mPresenter;
     @Inject
     public RecipeRepository mRepository;
@@ -80,7 +83,7 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
         mPresenter = new RecipeDetailPresenter(mRepository);
         mPresenter.takeView(this);
         setRecyclerView();
-        setIngredientsButton();
+        setIngredientsRecyclerView();
         Timber.d("Recipe id" + mRecipeId);
         mPresenter.start(mRecipeId);
     }
@@ -91,13 +94,13 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
         outState.putLong(STATE_RECIPE_ID, mRecipeId);
     }
 
-    private void setIngredientsButton() {
-        mBinding.recipeDetailIngredientsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onIngredientsClick();
-            }
-        });
+    private void setIngredientsRecyclerView() {
+        RecyclerView recycler = mBinding.recipeDetailIngredientsRecyclerView;
+        RecyclerView.LayoutManager layout = new LinearLayoutManager(
+                getActivity(),LinearLayoutManager.VERTICAL, false);
+        recycler.setLayoutManager(layout);
+        mIgredientsAdapter = new IngredientsAdapter();
+        recycler.setAdapter(mIgredientsAdapter);
     }
 
     @Override
@@ -135,6 +138,11 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
     @Override
     public void showRecipeSteps(List<Step> steps) {
         mAdapter.swapRecipeStep(steps);
+    }
+
+    @Override
+    public void showIngredients(List<Ingredient> ingredients) {
+        mIgredientsAdapter.swapData(ingredients);
     }
 
     @Override

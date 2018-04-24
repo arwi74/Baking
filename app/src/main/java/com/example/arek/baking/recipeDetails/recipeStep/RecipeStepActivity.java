@@ -22,7 +22,8 @@ import javax.inject.Inject;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableObserver;
 
-public class RecipeStepActivity extends AppCompatActivity {
+public class RecipeStepActivity extends AppCompatActivity implements
+        RecipeStepActivityFragment.RecipeStepActivityFragmentHandler {
     public static final String EXTRA_RECIPE_STEP_ID = "extra_recipe_step_id";
     public static final String STATE_RECIPE_ID = "state_recipe_id";
     public static final String STATE_RECIPE_STEP_ID = "state_recipe_step_id";
@@ -153,4 +154,10 @@ public class RecipeStepActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void setTitle(String title) {
+        if ( getSupportActionBar() != null ) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
 }

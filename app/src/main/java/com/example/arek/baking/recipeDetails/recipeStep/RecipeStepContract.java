@@ -11,14 +11,16 @@ public interface RecipeStepContract {
 
     interface View {
 
-        public void showRecipeStep(Step step);
+        void showRecipeStep(Step step);
 
-        public void showErrorMessage();
+        void showErrorMessage();
+
+        void showTitle(String title);
     }
 
     interface Presenter extends BasePresenter<View> {
 
-        public void getRecipeStep(long recipeId, long recipeStepId);
+        void getRecipeStep(long recipeId, long recipeStepId);
     }
 
 }

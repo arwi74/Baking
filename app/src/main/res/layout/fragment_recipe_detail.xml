@@ -9,17 +9,10 @@
         tools:context="com.example.arek.baking.recipeDetails.RecipeDetailActivityFragment"
         tools:showIn="@layout/activity_recipe_detail">
 
-        <Button
-            android:id="@+id/recipe_detail_ingredients_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/recipe_detail_igredients_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recipe_detail_ingredients_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"></android.support.v7.widget.RecyclerView>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recipe_detail_recycler_view"
@@ -32,7 +25,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recipe_detail_ingredients_button" />
+            app:layout_constraintTop_toBottomOf="@+id/recipe_detail_ingredients_recycler_view" />
 
         <ProgressBar
             android:id="@+id/recipe_detail_progress_bar"
