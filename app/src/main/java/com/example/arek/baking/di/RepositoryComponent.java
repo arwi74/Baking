@@ -4,6 +4,8 @@ import com.example.arek.baking.recipeDetails.RecipeDetailActivityFragment;
 import com.example.arek.baking.recipeDetails.recipeStep.RecipeStepActivity;
 import com.example.arek.baking.recipeDetails.recipeStep.RecipeStepActivityFragment;
 import com.example.arek.baking.recipeList.RecipeListActivity;
+import com.example.arek.baking.service.BakingService;
+import com.example.arek.baking.widget.ListWidgetService;
 
 
 import javax.inject.Singleton;
@@ -21,4 +23,6 @@ public interface RepositoryComponent {
     void inject(RecipeDetailActivityFragment fragment);
     void inject(RecipeStepActivityFragment fragment);
     void inject(RecipeStepActivity activity);
+    void inject(ListWidgetService widget);
+    void inject(BakingService service);
 }

@@ -10,6 +10,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by Arkadiusz Wilczek on 14.04.18.
@@ -23,14 +24,19 @@ public class RecipeRepository {
         mBakingApi = bakingApi;
     }
 
-    public Observable<List<Recipe>> getRecipes() {
+    public synchronized Observable<List<Recipe>> getRecipes() {
+        Timber.d("getRecipes");
         if ( !mRecipes.isEmpty() ) {
+            Timber.d("getRecipes from mRecipe");
             return Observable.just(mRecipes);
         } else {
+            Timber.d("getRecipes from network");
             return mBakingApi.getRecipes()
                     .subscribeOn(Schedulers.io())
                     .map(recipes -> {
-                                mRecipes.addAll(recipes);
+                                if ( mRecipes.isEmpty() ) {
+                                    mRecipes.addAll(recipes);
+                                }
                                 return recipes;
                     });
         }

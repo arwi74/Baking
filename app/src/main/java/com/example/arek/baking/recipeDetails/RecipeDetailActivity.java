@@ -1,5 +1,7 @@
 package com.example.arek.baking.recipeDetails;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -9,10 +11,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.RemoteViews;
 
 import com.example.arek.baking.R;
 import com.example.arek.baking.databinding.ActivityRecipeDetailBinding;
 import com.example.arek.baking.recipeDetails.recipeStep.RecipeStepActivity;
+import com.example.arek.baking.service.BakingService;
+import com.example.arek.baking.utils.Utils;
+import com.example.arek.baking.widget.BakingWidget;
 
 import timber.log.Timber;
 
@@ -37,6 +43,9 @@ public class RecipeDetailActivity extends AppCompatActivity implements
         if ( savedInstanceState!= null && savedInstanceState.containsKey(EXTRA_RECIPE_ID)) {
             mRecipeId = savedInstanceState.getLong(EXTRA_RECIPE_ID);
         }
+        Utils.setRecipeForWidget(this, mRecipeId);
+        BakingService.startUpdateWidgets(this);
+
 
         Timber.d("onCreate activity:" + this.toString());
       //  if ( savedInstanceState == null ) {

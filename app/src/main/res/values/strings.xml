@@ -8,4 +8,6 @@
     <string name="recipe_step_fregment_error_message">Error while downloading data</string>
     <string name="next_button_text">next</string>
     <string name="previous_button_text">previous</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
