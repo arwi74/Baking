@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.example.arek.baking.R;
 import com.example.arek.baking.model.Step;
 
 import java.util.List;
@@ -33,4 +34,6 @@ public class Utils {
         edit.putLong(PREF_RECIPE_FOR_WIDGET, id);
         edit.commit();
     }
+
+
 }

@@ -1,24 +1,18 @@
 package com.example.arek.baking.recipeDetails;
 
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.RemoteViews;
 
 import com.example.arek.baking.R;
 import com.example.arek.baking.databinding.ActivityRecipeDetailBinding;
 import com.example.arek.baking.recipeDetails.recipeStep.RecipeStepActivity;
+import com.example.arek.baking.recipeDetails.recipeStep.RecipeStepActivityFragment;
 import com.example.arek.baking.service.BakingService;
 import com.example.arek.baking.utils.Utils;
-import com.example.arek.baking.widget.BakingWidget;
 
 import timber.log.Timber;
 
@@ -27,6 +21,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements
     ActivityRecipeDetailBinding mBinding;
     public static final String EXTRA_RECIPE_ID = "extra_recipe_id";
     private long mRecipeId;
+    private long mRecipeStepId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +41,27 @@ public class RecipeDetailActivity extends AppCompatActivity implements
         Utils.setRecipeForWidget(this, mRecipeId);
         BakingService.startUpdateWidgets(this);
 
-
         Timber.d("onCreate activity:" + this.toString());
-      //  if ( savedInstanceState == null ) {
-            openRecipeDetailFragment();
-//            Timber.d("savedInstanceState null");
-//        } else {
-//            Timber.d("savedInstanceState not null");
-//        }
+            showRecipeDetailFragment();
+
+        if ( isTwoPane() && savedInstanceState==null ) {
+            showRecipeStepFragment(mRecipeId, mRecipeStepId);
+        }
+
+    }
+
+    private void showRecipeStepFragment(long recipeId, long recipeStepId) {
+        RecipeStepActivityFragment fragment =
+                RecipeStepActivityFragment.newInstance(recipeId, recipeStepId);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_detail_recipe_step, fragment)
+                .commit();
+
+    }
+
+    private boolean isTwoPane() {
+        return getResources().getBoolean(R.bool.two_pane);
     }
 
     @Override
@@ -62,7 +70,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements
         outState.putLong(EXTRA_RECIPE_ID, mRecipeId);
     }
 
-    private void openRecipeDetailFragment() {
+    private void showRecipeDetailFragment() {
         Timber.d("open RecipeDetailFragment, recipe id: " + mRecipeId);
         RecipeDetailActivityFragment listFragment = RecipeDetailActivityFragment.newInstance(mRecipeId);
         getSupportFragmentManager().beginTransaction().replace(
@@ -80,10 +88,15 @@ public class RecipeDetailActivity extends AppCompatActivity implements
     @Override
     public void onRecipeStepClick(long recipeStepId) {
         Timber.d("recipe step click: "+recipeStepId);
-        Intent intent = new Intent(this, RecipeStepActivity.class);
-        intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, mRecipeId);
-        intent.putExtra(RecipeStepActivity.EXTRA_RECIPE_STEP_ID, recipeStepId);
-        startActivity(intent);
+        if ( isTwoPane() ) {
+            mRecipeStepId = recipeStepId;
+            showRecipeStepFragment(mRecipeId,mRecipeStepId);
+        } else {
+            Intent intent = new Intent(this, RecipeStepActivity.class);
+            intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, mRecipeId);
+            intent.putExtra(RecipeStepActivity.EXTRA_RECIPE_STEP_ID, recipeStepId);
+            startActivity(intent);
+        }
     }
 
     @Override
