@@ -1,6 +1,7 @@
 package com.example.arek.baking.recipeList;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import com.example.arek.baking.adapter.RecipeAdapter;

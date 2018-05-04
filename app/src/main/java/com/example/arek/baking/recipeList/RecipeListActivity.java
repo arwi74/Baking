@@ -2,6 +2,9 @@ package com.example.arek.baking.recipeList;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +20,7 @@ import com.example.arek.baking.databinding.ActivityRecipeListBinding;
 import com.example.arek.baking.model.Recipe;
 import com.example.arek.baking.recipeDetails.RecipeDetailActivity;
 import com.example.arek.baking.repository.RecipeRepository;
+import com.example.arek.baking.test.SimpleIdlingResource;
 
 import java.util.List;
 
@@ -32,10 +36,14 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
     RecipeAdapter mAdapter;
     private ActivityRecipeListBinding mBinding;
     private RecipeListContract.Presenter mPresenter;
+    @Nullable
+    private SimpleIdlingResource mSimpleIdlingresource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getIdlingResource();
+        mSimpleIdlingresource.setIdleState(false);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_list);
         ((BakingApp)getApplication()).getRepositoryComponent().inject(this);
         mPresenter = new RecipeListPresenter(mRecipeRepository);
@@ -70,6 +78,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
     @Override
     public void showRecipes(List<Recipe> recipes) {
         mAdapter.swapRecipes(recipes);
+        mSimpleIdlingresource.setIdleState(true);
     }
 
     @Override
@@ -82,5 +91,17 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
         Intent intent = new Intent(this, RecipeDetailActivity.class);
         intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID,recipeId);
         startActivity(intent);
+    }
+
+    @VisibleForTesting
+    public IdlingResource getIdlingResource() {
+        if ( mSimpleIdlingresource != null ) return mSimpleIdlingresource;
+        mSimpleIdlingresource = new SimpleIdlingResource();
+        return mSimpleIdlingresource;
+    }
+
+    @VisibleForTesting
+    public boolean isTwoPane() {
+        return getResources().getBoolean(R.bool.two_pane);
     }
 }
