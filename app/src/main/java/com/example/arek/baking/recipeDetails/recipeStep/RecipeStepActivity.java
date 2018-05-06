@@ -3,8 +3,10 @@ package com.example.arek.baking.recipeDetails.recipeStep;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.example.arek.baking.BakingApp;
 import com.example.arek.baking.R;
@@ -21,6 +23,7 @@ import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableObserver;
+import timber.log.Timber;
 
 public class RecipeStepActivity extends AppCompatActivity implements
         RecipeStepActivityFragment.RecipeStepActivityFragmentHandler {
@@ -44,6 +47,7 @@ public class RecipeStepActivity extends AppCompatActivity implements
         Toolbar toolbar = mBinding.toolbar;
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         Intent intent = getIntent();
         if ( intent == null || !intentHasExtraData(intent) ) finish();
 
@@ -52,7 +56,6 @@ public class RecipeStepActivity extends AppCompatActivity implements
         mRecipeStepId = intent.getLongExtra(EXTRA_RECIPE_STEP_ID, 0);
         if ( savedInstanceState == null ) {
             openStepFragment();
-            openStepSelectFragment();
         } else {
             if ( savedInstanceState.containsKey(STATE_RECIPE_STEP_ID) ) {
                 mRecipeId = savedInstanceState.getLong(STATE_RECIPE_ID);
@@ -63,7 +66,12 @@ public class RecipeStepActivity extends AppCompatActivity implements
         getRecipe();
     }
 
-    private void openStepSelectFragment() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if ( isFullScreen() ) {
+            Utils.hideStatusBar(this);
+        }
     }
 
     @Override
@@ -104,6 +112,10 @@ public class RecipeStepActivity extends AppCompatActivity implements
 
     }
 
+    private boolean isFullScreen() {
+        return getResources().getBoolean(R.bool.full_screen);
+    }
+
    private DisposableObserver<Recipe> getDisposableObserver() {
         return new DisposableObserver<Recipe>() {
             @Override
@@ -126,11 +138,11 @@ public class RecipeStepActivity extends AppCompatActivity implements
    }
 
     private void setEnabledNextButton(boolean enabled) {
-        mBinding.content.recipeStepNextButton.setEnabled(enabled);
+        mBinding.recipeStepNextButton.setEnabled(enabled);
     }
 
     private void setEnabledPreviousButton(boolean enabled) {
-        mBinding.content.recipeStepPreviousButton.setEnabled(enabled);
+        mBinding.recipeStepPreviousButton.setEnabled(enabled);
     }
 
     private void updateButtons() {
@@ -139,14 +151,14 @@ public class RecipeStepActivity extends AppCompatActivity implements
     }
 
     private void setButtonsListeners() {
-        mBinding.content.recipeStepNextButton.setOnClickListener(view -> {
+        mBinding.recipeStepNextButton.setOnClickListener(view -> {
            mStepsListIndex++;
            mRecipeStepId = mSteps.get(mStepsListIndex).getId();
            openStepFragment();
            updateButtons();
         });
 
-        mBinding.content.recipeStepPreviousButton.setOnClickListener(view -> {
+        mBinding.recipeStepPreviousButton.setOnClickListener(view -> {
             mStepsListIndex--;
             mRecipeStepId = mSteps.get(mStepsListIndex).getId();
             openStepFragment();
