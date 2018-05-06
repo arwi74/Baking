@@ -7,6 +7,7 @@ import android.support.annotation.VisibleForTesting;
 import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -42,21 +43,27 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeListC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getIdlingResource();
-        mSimpleIdlingresource.setIdleState(false);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_list);
         ((BakingApp)getApplication()).getRepositoryComponent().inject(this);
+
+        getIdlingResource();
+        mSimpleIdlingresource.setIdleState(false);
+
         mPresenter = new RecipeListPresenter(mRecipeRepository);
-        mAdapter = new RecipeAdapter((RecipeAdapter.RecipeAdapterListener)mPresenter);
-        RecyclerView recycler = mBinding.recipeListRecyclerView;
-        RecyclerView.LayoutManager layout = new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL,
-                false);
-        recycler.setLayoutManager(layout);
-        recycler.setHasFixedSize(true);
-        recycler.setAdapter(mAdapter);
+        mAdapter = new RecipeAdapter((RecipeAdapter.RecipeAdapterListener)mPresenter, this);
+        setRecyclerView();
         mPresenter.takeView(this);
         mPresenter.getRecipes();
+    }
+
+    private void setRecyclerView() {
+        int spanCount = 1;
+        if (isTwoPane()) spanCount = 3;
+
+        RecyclerView recycler = mBinding.recipeListRecyclerView;
+        recycler.setLayoutManager(new GridLayoutManager(this, spanCount));
+        recycler.setHasFixedSize(true);
+        recycler.setAdapter(mAdapter);
     }
 
     @Override

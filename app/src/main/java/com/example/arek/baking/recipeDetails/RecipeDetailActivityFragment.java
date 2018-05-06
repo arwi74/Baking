@@ -33,13 +33,15 @@ import timber.log.Timber;
 public class RecipeDetailActivityFragment extends Fragment implements RecipeDetailContract.View{
     private FragmentRecipeDetailBinding mBinding;
     private long mRecipeId;
+    private int mSelectedItem;
     private RecipeStepAdapter mAdapter;
     private IngredientsAdapter mIgredientsAdapter;
     private RecipeDetailContract.Presenter mPresenter;
     @Inject
     public RecipeRepository mRepository;
     private RecipeDetailActivityListener mListener;
-    private static final String STATE_RECIPE_ID = "state_recipe_id";
+  //  private static final String STATE_RECIPE_ID = "state_recipe_id";
+    private static final String STATE_SELECTED_ITEM = "state_selected_item";
 
     public RecipeDetailActivityFragment() {}
 
@@ -53,7 +55,6 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
     }
 
     public interface RecipeDetailActivityListener {
-        void onIngredientsClick();
         void onRecipeStepClick(long recipeStepId);
         void onTitleSet(String title);
     }
@@ -72,7 +73,9 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
         Bundle arguments = getArguments();
         if ( arguments != null && arguments.containsKey(RecipeDetailActivity.EXTRA_RECIPE_ID) ) {
             mRecipeId = arguments.getLong(RecipeDetailActivity.EXTRA_RECIPE_ID);
-            Timber.d("get arguments, recipeId: " + mRecipeId);
+        }
+        if ( savedInstanceState != null && savedInstanceState.containsKey(STATE_SELECTED_ITEM) ) {
+            mSelectedItem = savedInstanceState.getInt(STATE_SELECTED_ITEM);
         }
     }
 
@@ -91,7 +94,8 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(STATE_RECIPE_ID, mRecipeId);
+        mSelectedItem = mAdapter.getSelectedItemPosition();
+        outState.putInt(STATE_SELECTED_ITEM, mSelectedItem);
     }
 
     private void setIngredientsRecyclerView() {
@@ -131,13 +135,15 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
         RecyclerView.LayoutManager layout = new LinearLayoutManager(
                 getActivity(), LinearLayoutManager.VERTICAL, false);
         recycler.setLayoutManager(layout);
-        mAdapter = new RecipeStepAdapter((RecipeStepAdapter.RecipeStepListener)mPresenter);
+        mAdapter = new RecipeStepAdapter((RecipeStepAdapter.RecipeStepListener)mPresenter, getActivity());
         recycler.setAdapter(mAdapter);
+
     }
 
     @Override
     public void showRecipeSteps(List<Step> steps) {
         mAdapter.swapRecipeStep(steps);
+        mAdapter.setSelectedItemPosition(mSelectedItem);
     }
 
     @Override

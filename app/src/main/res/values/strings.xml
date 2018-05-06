@@ -10,4 +10,6 @@
     <string name="previous_button_text">previous</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="recipe_item_servings">Servings:</string>
+    <string name="ingredients_label">Ingredients:</string>
 </resources>

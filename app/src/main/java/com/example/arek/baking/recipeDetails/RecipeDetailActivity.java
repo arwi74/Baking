@@ -42,12 +42,12 @@ public class RecipeDetailActivity extends AppCompatActivity implements
         BakingService.startUpdateWidgets(this);
 
         Timber.d("onCreate activity:" + this.toString());
+        if ( savedInstanceState==null) {
             showRecipeDetailFragment();
-
-        if ( isTwoPane() && savedInstanceState==null ) {
-            showRecipeStepFragment(mRecipeId, mRecipeStepId);
+            if ( isTwoPane() ) {
+                showRecipeStepFragment(mRecipeId, mRecipeStepId);
+            }
         }
-
     }
 
     private void showRecipeStepFragment(long recipeId, long recipeStepId) {
@@ -61,7 +61,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements
     }
 
     private boolean isTwoPane() {
-        return getResources().getBoolean(R.bool.two_pane);
+        return Utils.isTwoPane(this);
     }
 
     @Override
@@ -77,12 +77,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements
                 mBinding.content.fragmentDetailRecipe.getId(),
                 listFragment
         ).commit();
-    }
-
-
-    @Override
-    public void onIngredientsClick() {
-        Timber.d("ingredients click");
     }
 
     @Override

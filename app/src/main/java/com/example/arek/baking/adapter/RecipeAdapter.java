@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.arek.baking.R;
 import com.example.arek.baking.model.Recipe;
 
@@ -23,13 +24,15 @@ import timber.log.Timber;
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
     private List<Recipe> mRecipes;
     private RecipeAdapterListener mListener;
+    private Context mContext;
 
     public interface RecipeAdapterListener {
         void onRecipeSelect(long recipeId);
     }
 
-    public RecipeAdapter(RecipeAdapterListener listener) {
+    public RecipeAdapter(RecipeAdapterListener listener, Context context) {
         mListener = listener;
+        mContext = context;
     }
 
     @NonNull
@@ -46,6 +49,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         Recipe recipe = mRecipes.get(position);
         String name = recipe.getName();
         holder.recipeName.setText(name);
+        holder.recipeServings.setText(String.valueOf(recipe.getServings()));
+        Glide.with(mContext)
+                .load(recipe.getImage())
+                .into(holder.recipeImage);
     }
 
     @Override
@@ -62,11 +69,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public class RecipeViewHolder extends RecyclerView.ViewHolder{
         ImageView recipeImage;
         TextView recipeName;
+        TextView recipeServings;
 
         public RecipeViewHolder(View itemView) {
             super(itemView);
             recipeImage = (ImageView) itemView.findViewById(R.id.recipe_item_image);
             recipeName = (TextView) itemView.findViewById(R.id.recipe_item_name_text_view);
+            recipeServings = (TextView) itemView.findViewById(R.id.recipe_item_servings);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

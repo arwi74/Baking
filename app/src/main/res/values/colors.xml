@@ -6,4 +6,7 @@
     <color name="widget_text_color">#ffffff</color>
     <color name="widget_background_color">#88000000</color>
     <color name="widget_background_title_color">#33000000</color>
+
+    <color name="item_background">#ffffff</color>
+    <color name="item_selected_background">#bbbbbb</color>
 </resources>

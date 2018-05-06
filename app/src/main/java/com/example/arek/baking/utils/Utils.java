@@ -35,5 +35,8 @@ public class Utils {
         edit.commit();
     }
 
+    public static boolean isTwoPane(Context context) {
+        return context.getResources().getBoolean(R.bool.two_pane);
+    }
 
 }
