@@ -12,13 +12,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".recipeList.RecipeListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".recipeDetails.RecipeDetailActivity"
             android:label="@string/title_activity_recipe_detail"
@@ -29,6 +30,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.arek.baking.recipeList.RecipeListActivity" />
         </activity>
+
         <activity
             android:name=".recipeDetails.recipeStep.RecipeStepActivity"
             android:label="@string/title_activity_recipe_step"

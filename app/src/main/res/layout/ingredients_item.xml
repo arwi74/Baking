@@ -19,14 +19,14 @@
         android:id="@+id/item_ingredient_quantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="4dp"
+        android:layout_marginRight="@dimen/standard_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/item_ingredient_measure"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/item_ingredient_measure"
-        android:layout_width="60dp"
+        android:layout_width="@dimen/ingredients_measure_width"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

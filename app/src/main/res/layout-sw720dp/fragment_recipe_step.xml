@@ -9,14 +9,12 @@
         android:layout_height="match_parent"
         tools:context="com.example.arek.baking.recipeDetails.recipeStep.RecipeStepActivityFragment"
         tools:showIn="@layout/activity_recipe_step"
-        android:padding="8dp">
+        android:padding="@dimen/standard_margin">
 
         <TextView
             android:id="@+id/recipe_step_short_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,14 +32,14 @@
             android:id="@+id/recipe_step_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/standard_margin"
             app:cardUseCompatPadding="true"
             app:layout_constraintTop_toBottomOf="@id/recipe_step_player">
             <TextView
                 android:id="@+id/recipe_step_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="@dimen/standard_margin"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                  />
         </android.support.v7.widget.CardView>

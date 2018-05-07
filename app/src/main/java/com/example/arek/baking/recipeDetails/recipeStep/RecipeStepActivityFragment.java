@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.example.arek.baking.BakingApp;
 import com.example.arek.baking.R;
 import com.example.arek.baking.databinding.FragmentRecipeStepBinding;
-import com.example.arek.baking.model.Recipe;
 import com.example.arek.baking.model.Step;
 import com.example.arek.baking.recipeDetails.RecipeDetailActivity;
 import com.example.arek.baking.repository.RecipeRepository;
@@ -33,13 +32,11 @@ import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 import javax.inject.Inject;
 
-import io.reactivex.observers.DisposableObserver;
 import timber.log.Timber;
 
 /**
@@ -165,7 +162,7 @@ public class RecipeStepActivityFragment extends Fragment implements RecipeStepCo
         if ( getActivity() != null ) {
             Toast.makeText(
                     getActivity(),
-                    R.string.recipe_step_fregment_error_message,
+                    R.string.recipe_step_fragment_error_message,
                     Toast.LENGTH_LONG
             ).show();
         }

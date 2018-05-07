@@ -3,12 +3,12 @@
     <string name="recipe_list_error_downloading">Error while downloading recipes</string>
     <string name="title_activity_recipe_detail">RecipeDetailActivity</string>
     <string name="action_settings">Settings</string>
-    <string name="recipe_detail_igredients_button">Ingredients</string>
+    <string name="recipe_detail_ingredients_button">Ingredients</string>
     <string name="title_activity_recipe_step">RecipeStepActivity</string>
-    <string name="recipe_step_fregment_error_message">Error while downloading data</string>
+    <string name="recipe_step_fragment_error_message">Error while downloading data</string>
     <string name="next_button_text">next</string>
     <string name="previous_button_text">previous</string>
-    <string name="appwidget_text">EXAMPLE</string>
+    <string name="appwidget_text">BakingApp</string>
     <string name="add_widget">Add widget</string>
     <string name="recipe_item_servings">Servings:</string>
     <string name="ingredients_label">Ingredients:</string>
