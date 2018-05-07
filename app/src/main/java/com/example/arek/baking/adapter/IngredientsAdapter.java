@@ -20,7 +20,6 @@ import java.util.List;
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder>{
     private List<Ingredient> mIngredients;
 
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

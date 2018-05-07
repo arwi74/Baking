@@ -15,8 +15,6 @@ import dagger.Provides;
 @Module
 public class RecipeRepositoryModule {
 
-
-
     @Singleton
     @Provides
     RecipeRepository provideRecipeRepository(BakingApi bakingApi) {

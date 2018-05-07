@@ -40,7 +40,6 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
     @Inject
     public RecipeRepository mRepository;
     private RecipeDetailActivityListener mListener;
-  //  private static final String STATE_RECIPE_ID = "state_recipe_id";
     private static final String STATE_SELECTED_ITEM = "state_selected_item";
 
     public RecipeDetailActivityFragment() {}
@@ -49,7 +48,6 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
         RecipeDetailActivityFragment fragment = new RecipeDetailActivityFragment();
         Bundle bundle = new Bundle();
         bundle.putLong(RecipeDetailActivity.EXTRA_RECIPE_ID,recipeId);
-        Timber.d("new instance, recipeId: " +recipeId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -87,7 +85,6 @@ public class RecipeDetailActivityFragment extends Fragment implements RecipeDeta
         mPresenter.takeView(this);
         setRecyclerView();
         setIngredientsRecyclerView();
-        Timber.d("Recipe id" + mRecipeId);
         mPresenter.start(mRecipeId);
     }
 

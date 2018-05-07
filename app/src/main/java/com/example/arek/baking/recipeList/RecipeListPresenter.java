@@ -56,13 +56,11 @@ public class RecipeListPresenter implements RecipeListContract.Presenter,
             public void onNext(List<Recipe> recipeList) {
                 mView.hideProgressBar();
                 mView.showRecipes(recipeList);
-                Timber.d("loaded recipe list " + recipeList);
             }
 
             @Override
             public void onError(Throwable e) {
                 mView.showErrorMessage();
-                Timber.e(e);
             }
 
             @Override
@@ -74,7 +72,6 @@ public class RecipeListPresenter implements RecipeListContract.Presenter,
 
     @Override
     public void onRecipeSelect(long recipeId) {
-        Timber.d("open recipe: "+recipeId);
         mView.openRecipe(recipeId);
     }
 }

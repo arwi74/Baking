@@ -56,7 +56,4 @@ public class Utils {
         if (actionBar != null)
             actionBar.hide();
     }
-
-
-
 }

@@ -33,7 +33,6 @@ public class BakingService extends IntentService {
 
     private static final String ACTION_UPDATE_WIDGETS = "com.example.arek.baking.service.action.update_widgets";
 
-
     public BakingService() {
         super("BakingService");
     }
@@ -78,7 +77,6 @@ public class BakingService extends IntentService {
         }
     }
 
-
     private void handleUpdateWidgets() {
         final Recipe recipe;
         DisposableObserver disposable = getObserver();
@@ -114,7 +112,4 @@ public class BakingService extends IntentService {
             }
         };
     }
-
-
-
 }

@@ -25,12 +25,9 @@ public class RecipeRepository {
     }
 
     public synchronized Observable<List<Recipe>> getRecipes() {
-        Timber.d("getRecipes");
         if ( !mRecipes.isEmpty() ) {
-            Timber.d("getRecipes from mRecipe");
-            return Observable.just(mRecipes);
+              return Observable.just(mRecipes);
         } else {
-            Timber.d("getRecipes from network");
             return mBakingApi.getRecipes()
                     .subscribeOn(Schedulers.io())
                     .map(recipes -> {

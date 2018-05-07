@@ -40,7 +40,6 @@ public class RecipeStepPresenter implements RecipeStepContract.Presenter {
                 .subscribe(mDisposable);
     }
 
-
     DisposableObserver<Step> getDisposableObserver() {
         return new DisposableObserver<Step>() {
             @Override

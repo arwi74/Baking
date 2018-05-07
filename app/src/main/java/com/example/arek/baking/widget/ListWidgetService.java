@@ -37,8 +37,6 @@ public class ListWidgetService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        int onGetViewFactory = Log.d("***", "onGetViewFactory");
-        Timber.d("onGetViewFactory ");
         if (mRepository == null) {
             ((BakingApp) getApplication()).getRepositoryComponent().inject(this);
         }
@@ -63,15 +61,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-        Log.d("***","widget onDataSetChanged");
-        //Timber.d("widget recipe id:");
         long recipeId = Utils.getRecipeForWidget(mContext);
-        Log.d("***","widget recipe id" + recipeId);
         mIngredients.clear();
         mRepository.getRecipe(recipeId)
-                //.observeOn(AndroidSchedulers.mainThread())
-                //.map(recipe -> mIngredients = recipe.getIngredients())
-                //.subscribe(getDisposableObserver());
         .subscribe(recipe -> mIngredients.addAll(recipe.getIngredients()));
     }
 

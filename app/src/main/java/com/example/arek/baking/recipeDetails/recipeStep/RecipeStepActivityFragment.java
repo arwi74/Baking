@@ -212,7 +212,6 @@ public class RecipeStepActivityFragment extends Fragment implements RecipeStepCo
         mExoPlayer = null;
     }
 
-
     private class ExoPlayerListener implements ExoPlayer.EventListener {
 
         @Override

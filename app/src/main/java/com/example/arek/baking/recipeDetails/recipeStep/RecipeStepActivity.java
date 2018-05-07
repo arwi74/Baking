@@ -112,9 +112,9 @@ public class RecipeStepActivity extends AppCompatActivity implements
 
     }
 
-    private boolean isFullScreen() {
+   private boolean isFullScreen() {
         return getResources().getBoolean(R.bool.full_screen);
-    }
+   }
 
    private DisposableObserver<Recipe> getDisposableObserver() {
         return new DisposableObserver<Recipe>() {
