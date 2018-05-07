@@ -10,8 +10,9 @@
 
         <ImageView
             android:id="@+id/recipe_item_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="@dimen/recipe_item_height"
+            android:layout_height="@dimen/recipe_item_height"
+            android:padding="@dimen/standard_margin"/>
 
         <TextView
             android:id="@+id/recipe_item_name_text_view"

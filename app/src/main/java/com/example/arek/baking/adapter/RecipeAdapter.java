@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.arek.baking.R;
 import com.example.arek.baking.model.Recipe;
+import com.example.arek.baking.utils.GlideApp;
 
 import java.util.List;
 
@@ -50,8 +51,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         String name = recipe.getName();
         holder.recipeName.setText(name);
         holder.recipeServings.setText(String.valueOf(recipe.getServings()));
-        Glide.with(mContext)
+
+        GlideApp.with(mContext)
                 .load(recipe.getImage())
+                .placeholder(R.drawable.ic_cake_black_24dp)
                 .into(holder.recipeImage);
     }
 
@@ -81,7 +84,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 @Override
                 public void onClick(View v) {
                     if (mListener != null) {
-                        Timber.d("item selected");
                         mListener.onRecipeSelect(mRecipes.get(getAdapterPosition()).getId());
                     }
                 }
